@@ -1,5 +1,6 @@
 import React from 'react';
 import css from './searchbar.module.css';
+
 export default class Searchbar extends React.Component {
   state = {
     search: '',
