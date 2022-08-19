@@ -49,6 +49,7 @@ class App extends Component {
         this.setState(prev => ({
           gallery: [...prev.gallery, ...hits],
           isLoader: false,
+          galleryLength: prev.galleryLength + this.state.per_page,
         }));
       });
     } catch (error) {
@@ -69,6 +70,7 @@ class App extends Component {
       search,
       page: 1,
       gallery: [],
+      galleryLength: 0,
     });
 
     if (search.trim() !== '') {
@@ -77,8 +79,7 @@ class App extends Component {
   };
   render() {
     const { handleSubmit, handleMore, escFunction, showModal } = this;
-    const { gallery, search, isLoader, show, id, galleryLength, per_page } =
-      this.state;
+    const { gallery, search, isLoader, show, id, galleryLength } = this.state;
 
     return (
       <div className={css.App}>
@@ -90,7 +91,7 @@ class App extends Component {
         <ImageGallery showModal={showModal} gallery={gallery} show={show} />
 
         {isLoader && <Loader />}
-        {gallery.length > 0 && per_page === gallery.length && (
+        {gallery.length > 0 && galleryLength === gallery.length && (
           <Button handleMore={handleMore} />
         )}
 
