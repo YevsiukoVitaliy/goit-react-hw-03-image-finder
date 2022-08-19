@@ -17,30 +17,24 @@ class App extends Component {
     error: null,
     show: false,
     id: '',
+    galleryLength: 0,
+    per_page: 12,
   };
 
   showModal = e => {
     this.setState({
       show: !this.state.show,
+      id: e,
     });
-    this.setState({ id: e });
   };
 
   escFunction = event => {
     if (this.state.show) {
-      if (event.keyCode === 27) {
+      if (event.key === 'Escape') {
         this.setState({ show: !this.state.show });
       }
     }
   };
-
-  componentDidMount() {
-    document.addEventListener('keydown', this.escFunction);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.escFunction);
-  }
 
   componentDidUpdate(p, s) {
     const { search, page } = this.state;
@@ -51,7 +45,7 @@ class App extends Component {
   }
   fetchImages = (search, page) => {
     try {
-      imageAPI(search, page).then(({ hits }) => {
+      imageAPI(search, page, this.state.per_page).then(({ hits }) => {
         this.setState(prev => ({
           gallery: [...prev.gallery, ...hits],
           isLoader: false,
@@ -61,7 +55,9 @@ class App extends Component {
       this.setState({ error: error.imageAPI });
       console.log('error', error.imageAPI);
     } finally {
-      this.setState({ isLoader: true });
+      this.setState({
+        isLoader: true,
+      });
     }
   };
   handleMore = () => {
@@ -74,14 +70,15 @@ class App extends Component {
       page: 1,
       gallery: [],
     });
-    if (search !== '') {
+
+    if (search.trim() !== '') {
       this.fetchImages(search, 1);
     }
   };
-
   render() {
     const { handleSubmit, handleMore, escFunction, showModal } = this;
-    const { gallery, search, isLoader, show, id } = this.state;
+    const { gallery, search, isLoader, show, id, galleryLength, per_page } =
+      this.state;
 
     return (
       <div className={css.App}>
@@ -93,7 +90,9 @@ class App extends Component {
         <ImageGallery showModal={showModal} gallery={gallery} show={show} />
 
         {isLoader && <Loader />}
-        {gallery.length !== 0 && <Button handleMore={handleMore} />}
+        {gallery.length > 0 && per_page === gallery.length && (
+          <Button handleMore={handleMore} />
+        )}
 
         <Modal
           escFunction={escFunction}

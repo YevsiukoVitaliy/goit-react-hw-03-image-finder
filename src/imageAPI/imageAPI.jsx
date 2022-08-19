@@ -5,10 +5,11 @@ axios.defaults.baseURL = `https://pixabay.com/api`;
 axios.defaults.params = {
   key: API_KEY,
   orientation: 'horizontal',
-  per_page: 4,
 };
 
-export const imageAPI = async (search, page) => {
-  const { data } = await axios(`/?q=${search}&page=${page}`);
+export const imageAPI = async (search, page, per_page) => {
+  const { data } = await axios(
+    `/?q=${search}&page=${page}&per_page=${per_page}`
+  );
   return data;
 };
